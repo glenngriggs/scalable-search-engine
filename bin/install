@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+IFS=$'\n\t'
+
+# Move to project root (bin/ is one level down)
+cd "$(dirname "$0")/.."
+
+echo "Setting up virtual environment ..."
+
+# Create venv if it doesn't exist
+if [ ! -d "env" ]; then
+  python3 -m venv env
+fi
+
+# Activate venv (only inside this script)
+# shellcheck disable=SC1091
+source env/bin/activate
+
+# Upgrade pip (optional)
+python -m pip install --upgrade pip
+
+echo "Installing Python dependencies from requirements.txt ..."
+pip install -r requirements.txt
+
+echo "Installing index_server package (editable) ..."
+pip install -e index_server
+
+echo "Installing search_server package (editable) ..."
+pip install -e search_server
+
+echo "Install complete."
+echo "To use this environment later:"
+echo "  source env/bin/activate"

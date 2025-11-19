@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>ask485</title>
+
+    <!-- Instructor CSS -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+</head>
+
+<body>
+    <div class="feed">
+
+        <!-- Title -->
+        <div class="ask485">ask485</div>
+
+        <!-- SEARCH FORM (do not change name/action/method) -->
+        <form action="/" method="GET" class="search_bar">
+            <!-- Query input -->
+            <input type="text" name="q" value="{{ query|default('') }}" placeholder="Search..." />
+
+            <!-- PageRank weight slider -->
+            <input type="range" name="w" min="0" max="1" step="0.01" value="{{ weight|default('0.5') }}" />
+
+            <input type="submit" value="Search" />
+        </form>
+
+        <div class="pagerank_weight">PageRank Weight</div>
+
+        <!-- RESULTS AREA -->
+        <div class="docs">
+            {% if results %}
+            {% for doc in results %}
+            <div class="doc">
+
+                <!-- URL: href is percent-encoded, text is decoded -->
+                <a class="doc_url" href="{{ doc.url }}" target="_blank">
+                    {{ doc.url_display }}
+                </a>
+
+                <!-- Title -->
+                <div class="doc_title">
+                    {{ doc.title }}
+                </div>
+
+                <!-- Summary -->
+                <div class="doc_summary">
+                    {% if doc.summary %}
+                    {{ doc.summary }}
+                    {% else %}
+                    No summary available
+                    {% endif %}
+                </div>
+
+            </div>
+            {% endfor %}
+            {% else %}
+            {% if query %}
+            <!-- No hits but a query was submitted -->
+            <div class="no_results">No search results found!</div>
+            {% endif %}
+            {% endif %}
+        </div>
+
+    </div>
+</body>
+
+</html>

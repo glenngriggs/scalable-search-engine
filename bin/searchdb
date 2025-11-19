@@ -1,0 +1,82 @@
+#!/usr/bin/env python3
+
+import sys
+import sqlite3
+from pathlib import Path
+import bs4
+
+CRAWL_DIR = Path("inverted_index/crawl")
+DB_PATH = Path("var/search.sqlite3")
+
+
+def get_summary(soup):
+    summary = ""
+    p_elts = soup.find_all("p", class_=False)
+    for p in p_elts:
+        p = p.text
+        if p.strip() and len(p) > 50:
+            summary = p.strip()[0:247]
+            summary = summary.replace("\n", " ")
+            summary = summary + "..."
+            break
+    return summary
+
+
+def main():
+    CRAWL_DIR.mkdir(parents=True, exist_ok=True)
+    DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+
+    # Drop + recreate documents table
+    cur.execute("DROP TABLE IF EXISTS documents")
+    cur.execute(
+        """
+        CREATE TABLE documents (
+            docid INTEGER PRIMARY KEY,
+            title VARCHAR(150),
+            summary VARCHAR(250),
+            url VARCHAR(150)
+        )
+        """
+    )
+
+    # Walk all *.html files in crawl dir
+    for html_path in sorted(CRAWL_DIR.glob("*.html")):
+        with html_path.open("r", encoding="utf-8") as f:
+            html = f.read()
+
+        soup = bs4.BeautifulSoup(html, "html.parser")
+
+        # docid from meta eecs485_docid
+        docid_str = soup.find("meta", attrs={"eecs485_docid": True}).get("eecs485_docid")
+        docid = int(docid_str)
+
+        # url from meta eecs485_url
+        url = soup.find("meta", attrs={"eecs485_url": True}).get("eecs485_url")
+
+        # title: <title> text, strip " - Wikipedia"
+        title = soup.find("title").get_text(strip=True)
+        suffix = " - Wikipedia"
+        if title.endswith(suffix):
+            title = title[: -len(suffix)]
+
+        # summary from helper
+        summary = get_summary(soup)
+        if not summary:
+            summary = ""
+
+        cur.execute(
+            "INSERT INTO documents (docid, title, summary, url) VALUES (?, ?, ?, ?)",
+            (docid, title, summary, url),
+        )
+
+    conn.commit()
+    conn.close()
+
+    print("Created var/search.sqlite3")
+
+
+if __name__ == "__main__":
+    main()
