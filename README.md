@@ -57,7 +57,7 @@ Together, these components form a production-style distributed search pipeline w
                           │
                 [Search Server UI]
                           │
-            Renders Top-10 HTML Results
+             Renders Top-10 HTML Results
 ```
 
 ---
