@@ -183,24 +183,6 @@ The search server renders an interactive page:
 
 ---
 
-## Testing
-
-The project includes a comprehensive public test suite covering:
-
-- MapReduce pipeline correctness  
-- Segment generation  
-- Index server API correctness  
-- PageRank/TF-IDF scoring  
-- Search UI rendering  
-- SQLite population via `searchdb`  
-
-All Python modules conform to:
-- Pylint  
-- Pydocstyle  
-- Pycodestyle  
-
----
-
 ## Installation
 
 ```bash
@@ -233,3 +215,19 @@ http://localhost:8000/
 ```
 
 ---
+
+## Testing
+
+The project includes a comprehensive public test suite covering:
+
+- MapReduce pipeline correctness  
+- Segment generation  
+- Index server API correctness  
+- PageRank/TF-IDF scoring  
+- Search UI rendering  
+- SQLite population via `searchdb`  
+
+All Python modules conform to:
+- Pylint  
+- Pydocstyle  
+- Pycodestyle  
