@@ -1,4 +1,4 @@
-# Distributed Search Engine (MapReduce + TF-IDF + PageRank)
+# Scalable Search Engine (MapReduce + TF-IDF + PageRank)
 
 A fully functional distributed search engine that processes a multi-thousand–document web crawl using a MapReduce pipeline, builds a segmented inverted index, exposes a REST API for scoring and retrieval, and serves a dynamic HTML search interface similar to Google/Bing.
 
